@@ -3,7 +3,6 @@ const path = require('path');
 const fs = require('fs');
 
 const makeWillModel = require('../models/makeWill');
-const { Elements } = require('@stripe/react-stripe-js');
 
 exports.getMakeWill = async (req, res) => {
    return res.json('success');
