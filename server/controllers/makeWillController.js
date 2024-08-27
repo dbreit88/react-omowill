@@ -139,11 +139,13 @@ exports.getEstateWill = async(req, res) => {
 }
 
 exports.updateEstateWill = async(req, res) => {
-    const relativePath = path.join('/data', Date.now().toString() + '.pdf');
+    const relativePath = path.join('', Date.now().toString() + '.pdf');
+    console.log(relativePath, '--------->')
     req.body.pdf_name = relativePath;
 
+
    var result = await makeWillModel.UpdateEstateWill(req);
-   const res1 = await createEstatePdf(req, relativePath);
+   const res1 = await createEstatePdf(req, '/data/' + relativePath);
 
    res.json(relativePath)
 }
@@ -156,11 +158,11 @@ exports.deleteEstateWill = async(req, res) => {
 
 
 exports.createEstateWill = async(req, res) => {
-    const relativePath = path.join('/data', Date.now().toString() + '.pdf');
+    const relativePath = path.join('', Date.now().toString() + '.pdf');
     req.body.pdf_name = relativePath;
     try {
         var result = await makeWillModel.InsertEstateWill(req);
-        const res1 = await createEstatePdf(req, relativePath);
+        const res1 = await createEstatePdf(req, '/data/' + relativePath);
         res.json(relativePath)
     }
     catch(ex)
@@ -171,7 +173,7 @@ exports.createEstateWill = async(req, res) => {
 }
 
 exports.getHandWill = async(req, res) => {
-    var result = await makeWillModel.GetEstateWill(req);
+    var result = await makeWillModel.GetHandWill(req);
  
     res.json(result)
  }
@@ -212,11 +214,11 @@ exports.createWills = async (req, res) => {
 
     console.log(req.body);
 
-   const relativePath = path.join('/data', Date.now().toString() + '.pdf');
+   const relativePath = path.join('', Date.now().toString() + '.pdf');
    if(req.body.id != -1)
     {
         req.body.pdf_name = relativePath;
-        var result = await makeWillModel.UpdateEstateWill(req);
+        var result = await makeWillModel.UpdateWills(req);
     }
     else
     {
@@ -224,7 +226,7 @@ exports.createWills = async (req, res) => {
         var result = await makeWillModel.InsertHandWill(req);
     }
 
-    const filePath = path.join(__dirname, '../../public', relativePath);
+    const filePath = path.join(__dirname, '../../public', '/data/' + relativePath);
 
     // Set padding/margin
     const padding = 28; // 1cm in points
@@ -278,10 +280,10 @@ exports.createWills = async (req, res) => {
     var result = await makeWillModel.UpdateWills(req);
 
     writeStream.on('finish', () => {
-        return res.json(relativePath);
+        // return res.json({will_real_url: relativePath});
     });
 
     return res.json({
-      relativePath
+        will_real_url: relativePath
     });
 }

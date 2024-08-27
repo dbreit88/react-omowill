@@ -58,8 +58,6 @@ const userMakeWillModel = {
             ]
         );
 
-        console.log(req.body.pdf_name, req.body.id, '----------->')
-
         const query1 = `UPDATE user_make_will SET will_real_estate = ? where id = ?`;
         const [result1] = await connection.query(query1, [req.body.pdf_name, req.body.userId]);
 
@@ -70,6 +68,7 @@ const userMakeWillModel = {
             
         const query = `UPDATE user_estate_pdf SET pdf_name = ?, reg_num = ?, location = ?, prop_type = ?, owner = ?, address = ?, land_category = ?, area = ?, acq_date = ?, reg_right = ?, prev_owner = ?, boundary_detail = ?, usage_right = ?, other_right = ?, restriction = ?, shared_prop = ?, own_ratio = ?, co_owner = ?, updated_at = NOW() where id = ?`;
         const connection = await getConnection();
+        console.log(req.body)
         const [result] = await connection.query(query, [
             req.body.pdf_name,
             req.body.reg_num,
@@ -90,6 +89,7 @@ const userMakeWillModel = {
             req.body.own_ratio,
             req.body.co_owner,
             req.body.id]);
+    
 
         const query1 = `UPDATE user_make_will SET will_real_estate = ? where id = ?`;
         const [result1] = await connection.query(query1, [req.body.pdf_name, req.body.userId]);
@@ -98,13 +98,7 @@ const userMakeWillModel = {
         return result
     },
 
-    GetEstateWill: async (req) => {
-        const pdf_name = req.body.pdf_name;
-        const connection = await getConnection();
-        const [result] = await connection.query('select * from user_estate_pdf where pdf_name = ?;', [pdf_name]);
-
-        return result;
-    },
+    
 
     DeleteEstateWill: async (req) => {
         const pdf_name = req.body.pdf_name;
@@ -118,7 +112,7 @@ const userMakeWillModel = {
         console.log('--------------------->1')
         const connection = await getConnection();
         const [result] = await connection.query(
-            `INSERT INTO user_will_content (pdf_name, content) VALUES (?, ?)`,
+            `INSERT INTO user_will_content (pdf_name, will_note) VALUES (?, ?)`,
             [
                 req.body.pdf_name,
                 req.body.will_note,
@@ -134,7 +128,7 @@ const userMakeWillModel = {
 
     UpdateEstateWill: async (req) => {
             
-        const query = `UPDATE user_will_content SET pdf_name = ?, content = ? where id = ?`;
+        const query = `UPDATE user_will_content SET pdf_name = ?, will_note = ? where id = ?`;
         const connection = await getConnection();
         const [result] = await connection.query(query, [
             req.body.pdf_name,
@@ -149,6 +143,14 @@ const userMakeWillModel = {
     },
 
     GetEstateWill: async (req) => {
+        const pdf_name = req.body.pdf_name;
+        const connection = await getConnection();
+        const [result] = await connection.query('select * from user_estate_pdf where pdf_name = ?;', [pdf_name]);
+
+        return result;
+    },
+
+    GetHandWill: async (req) => {
         const pdf_name = req.body.pdf_name;
         const connection = await getConnection();
         const [result] = await connection.query('select * from user_will_content where pdf_name = ?;', [pdf_name]);

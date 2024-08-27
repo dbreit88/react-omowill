@@ -314,3 +314,7 @@ input[type="checkbox"] {
         -webkit-transform: translateY(0%);
     }
 }
+
+.accordion-button:not(.collapsed) {
+    background-color: unset !important;
+}

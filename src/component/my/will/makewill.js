@@ -69,7 +69,15 @@ function MakeWill(props) {
                             toast.error('遺言書にメモを添えてください。');
                             return;
                         }
-                    await createPdf();
+                    try
+                    {
+                        const result = await createPdf();
+                        toast.success("成功しました。");
+                    }
+                    catch(ex)
+                    {
+                        toast.error("失敗しました。");
+                    }
                 }
             else if(type == 2)
                 {
@@ -79,7 +87,15 @@ function MakeWill(props) {
                         toast.error('遺産リストにメモを添える。');
                         return;
                     }
-                    await createPdf(1);
+                    try
+                    {
+                        await createPdf(1);
+                        toast.success("成功しました。");
+                    }
+                    catch(ex)
+                    {
+                        toast.error("失敗しました。");
+                    }
                 }
         }
         // else {
@@ -118,7 +134,7 @@ function MakeWill(props) {
                 });
                 console.log(result);
                 if(result.data.will_real_url)
-                    updatedWills.will_real_estate = result.data.will_real_url;
+                    updatedWills.will_real_url = result.data.will_real_url;
                 setWills(updatedWills);
             } catch (error) {
                 toast.error('ネットワーク接続を確認してください。');
@@ -126,6 +142,7 @@ function MakeWill(props) {
         }
         else if(opt === 1)
         {
+            debugger
             try {
                 await axios.post(process.env.REACT_APP_API_URL + '/removeFile', { fileInfo: wills.will_real_estate });
             } catch (error) {
@@ -138,15 +155,16 @@ function MakeWill(props) {
                     {
                         try
                         {
+                            debugger
                             result = await axios.post(process.env.REACT_APP_API_URL + '/createEstateWill', {
                                 ...updatedWills.estate,
                                 userId: wills.id
                             });
-                            if(result.data.relativePath)
+                            if(result.data)
                                 {
                                     setWills((prev) => ({
                                         ...prev,
-                                        will_real_estate: result.data.relativePath
+                                        will_real_estate: result.data
                                     }));
                                 }
                         }
@@ -164,7 +182,7 @@ function MakeWill(props) {
                             });
                             setWills((prev) => ({
                                 ...prev,
-                                will_real_estate: result.data.relativePath
+                                will_real_estate: result.data
                             }));
                         }
                         catch(error)
@@ -308,13 +326,16 @@ function MakeWill(props) {
     }, [props])
 
     useEffect(() => {
+        debugger
         if(wills.will_real_estate !== '')
             axios.post(process.env.REACT_APP_API_URL + '/getEstateWill', {pdf_name: wills.will_real_estate})
             .then(res => {
+                debugger
                 if(res.data[0])
                 {
                     const acq_date = moment(res.data[0].acq_date).format('YYYY-MM-DD');
                     setWills(prev => ({ ...prev, estate: { ...res.data[0], acq_date } }))
+                    setWills(prev => ({...prev, will_status: 1}))
                 }
             })
             .catch(err => {
@@ -329,7 +350,8 @@ function MakeWill(props) {
             .then(res => {
                 if(res.data[0])
                 {
-                    setWills(prev => ({ ...prev, hand: { ...res.data[0] } }))
+                    setWills(prev => ({ ...prev, hand: { ...res.data[0] } }));
+                    setWills(prev => ({...prev, will_status: 1}))
                 }
             })
             .catch(err => {
@@ -338,8 +360,8 @@ function MakeWill(props) {
     }, [wills.will_real_url])
 
     useEffect(() => {
-        console.log(wills.estate, 'wills.estate---->');
-    }, [wills.estate])
+        console.log(wills, 'wills->here---->');
+    }, [wills])
 
     const handleSelect = (eventKey) => {
         setActiveKey(eventKey);
@@ -347,6 +369,7 @@ function MakeWill(props) {
 
     const onChangeEstateInput = (e) => {
         const { name, value } = e.target;
+        console.log(wills.hand, '----->')
         setWills((prev) => ({ ...prev, estate: {...prev.estate, [name]: value} }));
     }
 
@@ -365,26 +388,26 @@ function MakeWill(props) {
                     <div className='d-flex flex-column born-pdf-field'>
                         <iframe
                             title="deathVideo"
-                            src={wills.will_status === 0 ? pdfSampleURL + `#toolbar=0` : wills.will_real_url + `#toolbar=0`}
+                            src={wills.will_status === 0 ? pdfSampleURL + `#toolbar=0` : "/data/" + wills.will_real_url + `#toolbar=0`}
                             width="100%"
                             height="400px"
                             border="none"
                         />
                         <button
                             className='btn btn-primary'
-                            onClick={() => window.open(wills.will_status === 0 ? pdfSampleURL : wills.will_real_url, '_blank')}>詳細を表示</button>
+                            onClick={() => window.open(wills.will_status === 0 ? pdfSampleURL : "/data/" + wills.will_real_url, '_blank')}>詳細を表示</button>
                     </div>
                     <div className='d-flex flex-column mt-2 born-pdf-field'>
                         <iframe
                             title="deathVideo"
-                            src={wills.will_status === 0 ? pdfSampleURL + `#toolbar=0` : wills.will_real_estate + `#toolbar=0`}
+                            src={wills.will_status === 0 ? pdfSampleURL + `#toolbar=0` : "/data/" + wills.will_real_estate + `#toolbar=0`}
                             width="100%"
                             height="400px"
                             border="none"
                         />
                         <button
                             className='btn btn-primary'
-                            onClick={() => window.open(wills.will_status === 0 ? pdfSampleURL : wills.will_real_estate, '_blank')}>詳細を表示</button>
+                            onClick={() => window.open(wills.will_status === 0 ? pdfSampleURL : "/data/" + wills.will_real_estate, '_blank')}>詳細を表示</button>
                     </div>
                 </div>
 

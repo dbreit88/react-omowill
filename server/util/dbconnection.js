@@ -285,7 +285,7 @@ const createTables = async () => {
         CREATE TABLE user_will_content  (
             'id' int NOT NULL AUTO_INCREMENT PRIMARY KEY,
             'pdf_name' varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-            'content' varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+            'will_note' varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
             PRIMARY KEY ('id') USING BTREE
           ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
         `
