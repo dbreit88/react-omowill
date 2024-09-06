@@ -348,10 +348,10 @@ const getConnection = async () => {
 };
 
 // Call the createTables function once when the module is required
-createTables().then(() => {
-    console.log('Database tables initialized');
-}).catch(error => {
-    console.error('Error during table initialization:', error.message);
-});
+// createTables().then(() => {
+//     console.log('Database tables initialized');
+// }).catch(error => {
+//     console.error('Error during table initialization:', error.message);
+// });
 
 module.exports = getConnection;

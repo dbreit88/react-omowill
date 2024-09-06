@@ -142,7 +142,6 @@ function MakeWill(props) {
         }
         else if(opt === 1)
         {
-            debugger
             try {
                 await axios.post(process.env.REACT_APP_API_URL + '/removeFile', { fileInfo: wills.will_real_estate });
             } catch (error) {
@@ -155,7 +154,6 @@ function MakeWill(props) {
                     {
                         try
                         {
-                            debugger
                             result = await axios.post(process.env.REACT_APP_API_URL + '/createEstateWill', {
                                 ...updatedWills.estate,
                                 userId: wills.id
@@ -326,11 +324,9 @@ function MakeWill(props) {
     }, [props])
 
     useEffect(() => {
-        debugger
         if(wills.will_real_estate !== '')
             axios.post(process.env.REACT_APP_API_URL + '/getEstateWill', {pdf_name: wills.will_real_estate})
             .then(res => {
-                debugger
                 if(res.data[0])
                 {
                     const acq_date = moment(res.data[0].acq_date).format('YYYY-MM-DD');

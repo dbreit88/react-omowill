@@ -125,6 +125,120 @@ doc.text('押印', textX, currentY + 20); // Manually place the text without 'al
     return relativePath;
 }
 
+// const createEstatePdf = async (req, relativePath) => {
+
+//     const filePath = path.join(__dirname, '../../public', relativePath);
+
+//     const padding = 28; // 1cm in points
+
+//     // Create a new PDF document with padding
+//     const doc = new PDFDocument({
+//         pdfVersion: '1.5',
+//         lang: 'ja-JP',
+//         tagged: true,
+//         displayTitle: true,
+//         margin: padding
+//     });
+
+//     // Stream the document to a file
+//     const writeStream = fs.createWriteStream(filePath);
+//     doc.pipe(writeStream);
+
+//     // Set font
+//     doc.font('./public/assets/fonts/static/NotoSansJP-Bold.ttf');
+
+//     // Define table function
+//     const drawTable = (doc, x, y, table) => {
+//         const cellPadding = 5;
+//         const cellHeight = 30;
+
+//         table.forEach((row, rowIndex) => {
+//             let maxHeight = cellHeight;
+//             let startY = y + rowIndex * maxHeight;
+
+//             row.forEach((cell, colIndex) => {
+//                 const startX = x + colIndex * (doc.page.width - padding * 2) / row.length;
+
+//                 // Draw cell border
+//                 doc.rect(startX, startY, (doc.page.width - padding * 2) / row.length, maxHeight).stroke();
+                
+//                 // Add text in the cell
+//                 doc.text(cell, startX + cellPadding, startY + cellPadding, {
+//                     width: (doc.page.width - padding * 2) / row.length - cellPadding * 2,
+//                     align: 'left'
+//                 });
+//             });
+//         });
+//     };
+
+//     // Example of sections and fields with borders
+//     const tables = [
+//         [
+//             ['登録番号 (Registration Number)', req.body.reg_num],
+//             ['所在地 (Location)', req.body.location],
+//             ['種類 (Type of Property)', req.body.prop_type]
+//         ],
+//         [
+//             ['所有者 (Owner)', req.body.owner],
+//             ['住所 (Address)', req.body.address],
+//             ['地目 (Land Category)', req.body.land_category]
+//         ],
+//         [
+//             ['面積 (Area)', req.body.area],
+//             ['取得日 (Acquisition Date)', req.body.acq_date],
+//             ['登録権利 (Registered Rights)', req.body.reg_right]
+//         ],
+//         [
+//             ['前所有者 (Previous Owner)', req.body.prev_owner],
+//             ['境界の詳細 (Boundary Details)', req.body.boundary_detail],
+//             ['使用権 (Usage Rights)', req.body.usage_right]
+//         ],
+//         [
+//             ['その他の権利 (Other Rights)', req.body.other_right],
+//             ['制限 (Restrictions)', req.body.restriction],
+//             ['共有物 (Shared Property)', req.body.shared_prop]
+//         ],
+//         [
+//             ['所有権割合 (Ownership Ratio)', req.body.own_ratio],
+//             ['共同所有者 (Co-owner)', req.body.co_owner]
+//         ]
+//     ];
+
+//     let currentY = padding * 2;
+
+//     // Draw each table section with section titles
+//     tables.forEach((table, index) => {
+//         // Add section titles for each group
+//         doc.fontSize(12).font('./public/assets/fonts/static/NotoSansJP-Bold.ttf');
+//         doc.text(`Section ${index + 1}`, padding, currentY);
+//         currentY += padding; // Add space after the title
+
+//         // Draw the table
+//         drawTable(doc, padding, currentY, table);
+//         currentY += table.length * 30 + padding; // Adjust the Y position for the next table
+//     });
+
+//     // Position signature and seal sections (bottom right)
+//     const textX = doc.page.width - padding - 150; // Adjust based on the image layout
+
+//     currentY += padding * 2;
+//     doc.fontSize(12).font('./public/assets/fonts/static/NotoSansJP-Bold.ttf');
+//     doc.text('署名 (Signature)', textX, currentY);
+//     currentY += 25; // Add space for signature
+
+//     doc.text('押印 (Seal)', textX, currentY + 20);
+
+//     // Finalize the document
+//     doc.end();
+
+//     req.body.will_real_url = relativePath;
+
+//     var result = await makeWillModel.UpdateWills(req);
+
+//     return relativePath;
+// };
+
+
 exports.updateWills = async (req, res) => {
    var result = await makeWillModel.UpdateWills(req);
 

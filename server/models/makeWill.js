@@ -126,21 +126,21 @@ const userMakeWillModel = {
         return result;
     },
 
-    UpdateEstateWill: async (req) => {
+    // UpdateEstateWill: async (req) => {
             
-        const query = `UPDATE user_will_content SET pdf_name = ?, will_note = ? where id = ?`;
-        const connection = await getConnection();
-        const [result] = await connection.query(query, [
-            req.body.pdf_name,
-            req.body.will_note,
-            req.body.id]);
+    //     const query = `UPDATE user_will_content SET pdf_name = ?, will_note = ? where id = ?`;
+    //     const connection = await getConnection();
+    //     const [result] = await connection.query(query, [
+    //         req.body.pdf_name,
+    //         req.body.will_note,
+    //         req.body.id]);
 
-        const query1 = `UPDATE user_make_will SET will_real_url = ? where id = ?`;
-        const [result1] = await connection.query(query1, [req.body.pdf_name, req.body.userId]);
+    //     const query1 = `UPDATE user_make_will SET will_real_url = ? where id = ?`;
+    //     const [result1] = await connection.query(query1, [req.body.pdf_name, req.body.userId]);
     
 
-        return result
-    },
+    //     return result
+    // },
 
     GetEstateWill: async (req) => {
         const pdf_name = req.body.pdf_name;
