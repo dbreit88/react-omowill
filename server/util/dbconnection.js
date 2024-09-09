@@ -1,6 +1,5 @@
 const mysql = require('mysql2');
-require('dotenv').config({path: '../configs/.env'});
-console.log("hehehe", process.env.REACT_APP_DATABASE_HOST_URL)
+
 const pool = mysql.createPool({
     host: process.env.REACT_APP_DATABASE_HOST_URL,
     user: process.env.REACT_APP_DATABASE_USERNAME,
@@ -282,15 +281,6 @@ const createTables = async () => {
           ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
         `
 
-        const willPdfTable = `
-        CREATE TABLE user_will_content  (
-            'id' int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            'pdf_name' varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-            'will_note' varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-            PRIMARY KEY ('id') USING BTREE
-          ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-        `
-
        
 
         await connection.query(userTableQuery);
@@ -321,8 +311,6 @@ const createTables = async () => {
 
         await connection.query(estateTable);
 
-        await connection.query(willPdfTable);
-
         // const insertInfoTable = `
         //     INSERT INTO info (date, title, subTitle, content, kind, senderInfo)
         //     VALUES
@@ -349,10 +337,10 @@ const getConnection = async () => {
 };
 
 // Call the createTables function once when the module is required
-// createTables().then(() => {
-//     console.log('Database tables initialized');
-// }).catch(error => {
-//     console.error('Error during table initialization:', error.message);
-// });
+createTables().then(() => {
+    console.log('Database tables initialized');
+}).catch(error => {
+    console.error('Error during table initialization:', error.message);
+});
 
 module.exports = getConnection;

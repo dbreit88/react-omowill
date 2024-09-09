@@ -3,7 +3,7 @@ const app = express();
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
-// const port = process.env.REACT_APP_API_PORT;
+const port = process.env.REACT_APP_API_PORT;
 const userRouter = require('./routes/userRoute');
 const deathRouter = require('./routes/deathRoute');
 const bornRouter = require('./routes/bornRoute');
@@ -15,15 +15,12 @@ const paymentRoute = require('./routes/paymentRoute');
 const connectDB = require('./util/dbconnection');
 const backupDatabase = require('./util/backup');
 
-require('dotenv').config({path: './configs/.env'});
-const port = process.env.REACT_APP_API_PORT;
-console.log("port==================", port)
 // Connect to the database
 connectDB();
 
 // CORS options
 const corsOptions = {
-    origin: '*', // Fallback to localhost if env variable is not set
+    origin: process.env.REACT_APP_CLIENT_URL, // Fallback to localhost if env variable is not set
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
     allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
     credentials: true, // Allow cookies to be sent
