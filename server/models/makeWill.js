@@ -98,6 +98,15 @@ const userMakeWillModel = {
         return result
     },
 
+    UpdateUserMakeWill: async (req) => {
+        const connection = await getConnection();
+        const query = `UPDATE user_make_will SET will_real_estate = ? where id = ?`;
+        const [result] = await connection.query(query, [req.body.pdf_name, req.body.userId]);
+    
+
+        return result;
+    },
+
     
 
     DeleteEstateWill: async (req) => {

@@ -21,23 +21,54 @@ function MakeWill(props) {
         estate: {
             id: '',
             pdf_name: '',
-            reg_num: '',
-            location: '',
-            prop_type: '',
-            owner: '',
-            address: '',
-            land_category: '',
-            area: 0,
-            acq_date: '',
-            reg_right: '',
-            prev_owner: '',
-            boundary_detail: '',
-            usage_right: '',
-            other_right: '',
-            restriction: '',
-            shared_prop: '',
-            own_ratio: 0,
-            co_owner: '',
+            land: {
+                id: '',
+                preparation: '',
+                map_num: '',
+                estate_num: '',
+                date: '',
+                serial: '',
+                location: '',
+                land_num: '',
+                land_use: '',
+                land_area: 0,
+                cause_date: '',
+                reg_date: '',
+                owner: ''
+            },
+            owner_right: [
+                // {
+                //     id: '',
+                //     order_num: '',
+                //     reg_purpose: '',
+                //     reg_date: '',
+                //     cause: '',
+                //     other_info: ''
+                // }
+            ],
+            other_right: [
+                // {
+                //     id: '',
+                //     order_num: '',
+                //     reg_purpose: '',
+                //     reg_date: '',
+                //     cause: '',
+                //     other_info: ''
+                // }
+            ],
+            cert_info: {
+                cert_num: '',
+                cert_copy: '',
+                mort_info: [
+                    // {
+                    //     id: '',
+                    //     num: '',
+                    //     rights_desc: '',
+                    //     order_num: '',
+                    //     other: ''
+                    // }
+                ]
+            }
         }
     });
 
@@ -81,12 +112,51 @@ function MakeWill(props) {
                 }
             else if(type == 2)
                 {
-                    if(wills.estate.reg_num == '' || wills.estate.location === '' || wills.estate.prop_type === '' || wills.estate.owner === '' || wills.estate.address === '' || wills.estate.land_category == ''
-                    || wills.estate.area == 0 || wills.estate.acq_date == '' || wills.estate.reg_right == '' || wills.estate.boundary_detail == '' || wills.estate.shared_prop == '' || wills.estate.own_ratio == 0)
-                    {
-                        toast.error('遺産リストにメモを添える。');
+                    let validationErrors = [];
+
+                    // if(wills.estate.reg_num == '' || wills.estate.location === '' || wills.estate.prop_type === '' || wills.estate.owner === '' || wills.estate.address === '' || wills.estate.land_category == ''
+                    // || wills.estate.area == 0 || wills.estate.acq_date == '' || wills.estate.reg_right == '' || wills.estate.boundary_detail == '' || wills.estate.shared_prop == '' || wills.estate.own_ratio == 0)
+                    // {
+                    //     toast.error('遺産リストにメモを添える。');
+                    //     return;
+                    // }
+                    // Validate estate land fields
+                    const { land } = wills.estate;
+                    if (!land.estate_num || !land.location || !land.land_num || !land.land_use || land.land_area === 0 || !land.cause_date || !land.reg_date || !land.owner || !land.date || !land.serial) {
+                        validationErrors.push("Estate land fields are missing.");
+                    }
+
+                    // Validate estate owner_right array
+                    wills.estate.owner_right.forEach((right, index) => {
+                        if (!right.reg_purpose || !right.reg_date || !right.cause) {
+                            validationErrors.push(`Owner Right at index ${index} is missing fields.`);
+                        }
+                    });
+
+                    // Validate estate other_right array
+                    wills.estate.other_right.forEach((right, index) => {
+                        if (!right.reg_purpose || !right.reg_date || !right.cause || !right.other_info) {
+                            validationErrors.push(`Other Right at index ${index} is missing fields.`);
+                        }
+                    });
+
+                    const { cert_info } = wills.estate;
+                    if (!cert_info.cert_num || !cert_info.cert_copy) {
+                        validationErrors.push("Certification info fields are missing.");
+                    }
+
+                    cert_info.mort_info.forEach((mort, index) => {
+                        if (!mort.rights_desc || !mort.ranking_number) {
+                            validationErrors.push(`Mortgage info at index ${index} is missing fields.`);
+                        }
+                    });
+
+                    // If any validation errors exist, show them
+                    if (validationErrors.length > 0) {
+                        validationErrors.forEach((error) => toast.error(error));
                         return;
                     }
+                    
                     try
                     {
                         await createPdf(1);
@@ -132,8 +202,9 @@ function MakeWill(props) {
                     ...updatedWills.hand,
                     userId: wills.id
                 });
-                console.log(result);
-                if(result.data.will_real_url)
+                debugger
+                console.log(result.data.will_real_url, '-------->');
+                // if(result.data.will_real_url != undefined)
                     updatedWills.will_real_url = result.data.will_real_url;
                 setWills(updatedWills);
             } catch (error) {
@@ -300,25 +371,54 @@ function MakeWill(props) {
                 id: -1
             },
             estate: {
-                id: -1,
+                id: '',
                 pdf_name: '',
-                reg_num: '',
-                location: '',
-                prop_type: '',
-                owner: '',
-                address: '',
-                land_category: '',
-                area: 0,
-                acq_date: '',
-                reg_right: '',
-                prev_owner: '',
-                boundary_detail: '',
-                usage_right: '',
-                other_right: '',
-                restriction: '',
-                shared_prop: '',
-                own_ratio: 0,
-                co_owner: '',
+                land: {
+                    id: '',
+                    preparation: '',
+                    map_num: '',
+                    estate_num: '',
+                    location: '',
+                    land_num: '',
+                    land_use: '',
+                    land_area: 0,
+                    cause_date: '',
+                    reg_date: '',
+                    owner: ''
+                },
+                owner_right: [
+                    // {
+                    //     id: '',
+                    //     order_num: '',
+                    //     reg_purpose: '',
+                    //     reg_date: '',
+                    //     cause: '',
+                    //     other_info: ''
+                    // }
+                ],
+                other_right: [
+                    // {
+                    //     id: '',
+                    //     order_num: '',
+                    //     reg_purpose: '',
+                    //     reg_date: '',
+                    //     cause: '',
+                    //     other_info: ''
+                    // }
+                ],
+                cert_info: {
+                    cert_num: '',
+                    cert_copy: '',
+                    mort_info: [
+                        // {
+                        //     id: '',
+                        //     num: '',
+                        //     rights_desc: '',
+                        //     order_num: '',
+                        //     other: ''
+                        // }
+                    ]
+                }
             }
         });
     }, [props])
@@ -330,7 +430,7 @@ function MakeWill(props) {
                 if(res.data[0])
                 {
                     const acq_date = moment(res.data[0].acq_date).format('YYYY-MM-DD');
-                    setWills(prev => ({ ...prev, estate: { ...res.data[0], acq_date } }))
+                    // setWills(prev => ({ ...prev, estate: { ...res.data[0], acq_date } }))
                     setWills(prev => ({...prev, will_status: 1}))
                 }
             })
@@ -365,8 +465,199 @@ function MakeWill(props) {
 
     const onChangeEstateInput = (e) => {
         const { name, value } = e.target;
-        console.log(wills.hand, '----->')
         setWills((prev) => ({ ...prev, estate: {...prev.estate, [name]: value} }));
+    }
+
+    const onChangeEstateLandInput = (e) => {
+        const { name, value } = e.target;
+        console.log(wills.hand, '----->')
+        setWills((prev) => ({ ...prev, estate: {...prev.estate, land: { ...prev.estate.land, [name] : value } } }));
+    }
+
+    const onChangeEstateOwnerRightInput = (e, index) => {
+        const { name, value } = e.target;
+    
+        // First, copy the current owner_right array
+        const updatedOwnerRights = [...wills.estate.owner_right];
+    
+        // Update the specific field in the object at the given index
+        updatedOwnerRights[index] = {
+            ...updatedOwnerRights[index], // Keep the other fields in the object
+            [name]: value // Update the specific field with the new value
+        };
+    
+        // Now set the updated state
+        setWills((prev) => ({
+            ...prev,
+            estate: {
+                ...prev.estate,
+                owner_right: updatedOwnerRights // Set the updated array
+            }
+        }));
+    };
+
+    const addEstateOwnerRight = () => {
+        let array = [...wills.estate.owner_right];
+        array.push(
+            {
+                id: '',
+                reg_purpose: '',
+                reg_date: '',
+                cause: '',
+                other_info: ''
+            }
+        );
+        setWills((prev) => ({
+            ...prev,
+            estate: {
+                ...prev.estate,
+                owner_right: array // Set the updated array
+            }
+        }));
+    }
+
+    const removeEstateOwnerRight = (index) => {
+        let array = [...wills.estate.owner_right];
+        array.splice(index, 1);
+        setWills((prev) => ({
+            ...prev,
+            estate: {
+                ...prev.estate,
+                owner_right: array // Set the updated array
+            }
+        }));
+    }
+
+    const onChangeEstateOtherRightInput = (e, index) => {
+        const { name, value } = e.target;
+    
+        // First, copy the current other_right array
+        const updatedOtherRights = [...wills.estate.other_right];
+    
+        // Update the specific field in the object at the given index
+        updatedOtherRights[index] = {
+            ...updatedOtherRights[index], // Keep the other fields in the object
+            [name]: value // Update the specific field with the new value
+        };
+    
+        // Now set the updated state
+        setWills((prev) => ({
+            ...prev,
+            estate: {
+                ...prev.estate,
+                other_right: updatedOtherRights // Set the updated array
+            }
+        }));
+    };
+
+    const addEstateOtherRight = () => {
+        let array = [...wills.estate.other_right];
+        array.push(
+            {
+                id: '',
+                reg_purpose: '',
+                reg_date: '',
+                cause: '',
+                other_info: ''
+            }
+        );
+        setWills((prev) => ({
+            ...prev,
+            estate: {
+                ...prev.estate,
+                other_right: array // Set the updated array
+            }
+        }));
+    }
+
+    const removeEstateOtherRight = (index) => {
+        let array = [...wills.estate.other_right];
+        array.splice(index, 1);
+        setWills((prev) => ({
+            ...prev,
+            estate: {
+                ...prev.estate,
+                other_right: array // Set the updated array
+            }
+        }));
+    }
+
+    const onChangeEstateCertInput = (e, index = 0) => {
+        const { name, value } = e.target;
+    
+        if(name === "cert_num" || name === "cert_copy")
+        {
+            setWills((prev) => ({
+                ...prev,
+                estate: {
+                    ...prev.estate,
+                    cert_info: {
+                        ...prev.estate.cert_info,
+                        [name] : value
+                    }
+                }
+            }));
+        }
+        else
+        {
+            // First, copy the current cert_info.mort_info array
+            const updatedCertRights = [...wills.estate.cert_info.mort_info];
+        
+            // Update the specific field in the object at the given index
+            updatedCertRights[index] = {
+                ...updatedCertRights[index], // Keep the other fields in the object
+                [name]: value // Update the specific field with the new value
+            };
+        
+            // Now set the updated state
+            setWills((prev) => ({
+                ...prev,
+                estate: {
+                    ...prev.estate,
+                    cert_info: {
+                        ...prev.estate.cert_info,
+                        mort_info: updatedCertRights // Set the updated array
+                    }
+                }
+            }));    
+        }
+    };
+
+    const addEstateCertInfo = () => {
+        let array = [...wills.estate.cert_info.mort_info];
+        array.push(
+            {
+                id: '',
+                rights_desc: '',
+                ranking_number: '',
+                other: ''
+            }
+        );
+        setWills((prev) => ({
+            ...prev,
+            estate: {
+                ...prev.estate,
+                cert_info: {
+                    ...prev.estate.cert_info,
+                    mort_info: array // Set the updated array
+                }
+            }
+        }));
+    }
+
+    const removeEstateCertInfo = (index) => {
+        let array = [...wills.estate.cert_info.mort_info];
+        array.splice(index, 1);
+        setWills((prev) => ({
+            ...prev,
+            estate: {
+                ...prev.estate,
+                cert_info: {
+                    ...prev.estate.cert_info,
+                    mort_info: array // Set the updated array
+                }
+            }
+        }));
     }
 
     return (
@@ -459,7 +750,7 @@ function MakeWill(props) {
                                 />
                             </div>
                             <div className="d-flex flex-row-reverse mt-5">
-                                <button className="btn btn-primary" type="button" onClick={handleUpdateWill}>Update</button>
+                                <button className="btn btn-primary" type="button" onClick={handleUpdateWill}>Pdf 生成</button>
                             </div>
                         </>
                     }
@@ -490,7 +781,7 @@ function MakeWill(props) {
                                             />
                                         </div>
                                         <div className="d-flex flex-row-reverse mt-5">
-                                            <button className="btn btn-primary" type="button" onClick={() => handleUpdateWill(1)}>Update</button>
+                                            <button className="btn btn-primary" type="button" onClick={() => handleUpdateWill(1)}>Pdf 生成</button>
                                         </div>
                                     </Accordion.Body>
                                 </Accordion.Item>
@@ -499,69 +790,178 @@ function MakeWill(props) {
                                     <Accordion.Body>
                                         <Accordion defaultActiveKey="5" onSelect={handleSelect}>
                                             <Accordion.Item eventKey="5">
-                                                <Accordion.Header>一般情報</Accordion.Header>
+                                                <Accordion.Header>土地の表示</Accordion.Header>
                                                 <Accordion.Body>
                                                 <div className="input-group">
-                                                    <span className="input-group-text align-items-start">登記番号</span>
+                                                    <span className="input-group-text align-items-start">不動産番号</span>
                                                     <input
                                                         type="text"
                                                         className="form-control"
-                                                        placeholder="登記番号"
-                                                        name='reg_num'
-                                                        value={wills.estate.reg_num}
-                                                        onChange={onChangeEstateInput}
+                                                        placeholder="00000000000000000000"
+                                                        name='estate_num'
+                                                        value={wills.estate.land.estate_num}
+                                                        onChange={onChangeEstateLandInput}
                                                     />
                                                 </div>
                                                 <div className="input-group">
-                                                    <span className="input-group-text align-items-start">所在地 </span>
+                                                    <span className="input-group-text align-items-start">所在 </span>
                                                     <input
                                                         type="text"
                                                         className="form-control"
-                                                        placeholder="所在地 "
+                                                        placeholder="特別区南都町一丁目 "
                                                         name='location'
-                                                        value={wills.estate.location}
-                                                        onChange={onChangeEstateInput}
+                                                        value={wills.estate.land.location}
+                                                        onChange={onChangeEstateLandInput}
                                                     />
                                                 </div>
                                                 <div className="input-group">
-                                                    <span className="input-group-text align-items-start">財産の種類</span>
+                                                    <span className="input-group-text align-items-start">地番</span>
                                                     <input
                                                         type="text"
                                                         className="form-control"
-                                                        placeholder="財産の種類"
-                                                        name='prop_type'
-                                                        value={wills.estate.prop_type}
-                                                        onChange={onChangeEstateInput}
+                                                        placeholder="10番1"
+                                                        name='land_num'
+                                                        value={wills.estate.land.land_num}
+                                                        onChange={onChangeEstateLandInput}
                                                     />
                                                 </div>
                                                 <div className="input-group">
-                                                    <span className="input-group-text align-items-start">所有者名</span>
+                                                    <span className="input-group-text align-items-start">地目</span>
                                                     <input
                                                         type="text"
                                                         className="form-control"
-                                                        placeholder="所有者名"
+                                                        placeholder="宅地"
+                                                        name='land_use'
+                                                        value={wills.estate.land.land_use}
+                                                        onChange={onChangeEstateLandInput}
+                                                    />
+                                                </div>
+                                                <div className="input-group">
+                                                    <span className="input-group-text align-items-start"> 地積</span>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        placeholder="300"
+                                                        min="0"
+                                                        name='land_area'
+                                                        value={wills.estate.land.land_area}
+                                                        onChange={onChangeEstateLandInput}
+                                                    />
+                                                </div>
+                                                <div className="input-group">
+                                                    <span className="input-group-text align-items-start"> 原因及びその日付</span>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        placeholder="不詳"
+                                                        name='cause_date'
+                                                        value={wills.estate.land.cause_date}
+                                                        onChange={onChangeEstateLandInput}
+                                                    />
+                                                </div>
+                                                <div className="input-group">
+                                                    <span className="input-group-text align-items-start"> 登記の日付</span>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        placeholder="平成20年10月14日"
+                                                        name='reg_date'
+                                                        value={wills.estate.land.reg_date}
+                                                        onChange={onChangeEstateLandInput}
+                                                    />
+                                                </div>
+                                                <div className="input-group">
+                                                    <span className="input-group-text align-items-start"> 所有者</span>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        placeholder="特別区南都町一丁目1番1号 甲野 太郎"
                                                         name='owner'
-                                                        value={wills.estate.owner}
-                                                        onChange={onChangeEstateInput}
-                                                    />
-                                                </div>
-                                                <div className="input-group">
-                                                    <span className="input-group-text align-items-start"> 住所</span>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        placeholder=" 住所"
-                                                        name='address'
-                                                        value={wills.estate.address}
-                                                        onChange={onChangeEstateInput}
+                                                        value={wills.estate.land.owner}
+                                                        onChange={onChangeEstateLandInput}
                                                     />
                                                 </div>
                                                 </Accordion.Body>
                                             </Accordion.Item>
+                                            {/* here */}
                                             <Accordion.Item eventKey="2">
-                                                <Accordion.Header>物件詳細情報</Accordion.Header>
+                                                <Accordion.Header>【権利部 (甲区)】 (所有権に関する事項)</Accordion.Header>
                                                 <Accordion.Body>
-                                                <div className="input-group">
+                                                    <div className="d-flex justify-content-end mb-2">
+                                                        <button type="button" class="btn btn-dark" onClick={addEstateOwnerRight}>追加</button>
+                                                    </div>
+                                                    {
+                                                        <Accordion  onSelect={handleSelect}>
+                                                            {
+                                                                wills.estate.owner_right.map((item, index) => (
+                                                                    <Accordion.Item eventKey={index + "add"}>
+                                                                        <Accordion.Header>権利部 (甲区) {index  + 1}</Accordion.Header>
+                                                                            <Accordion.Body>
+                                                                                {/* <div className="input-group">
+                                                                                    <span className="input-group-text align-items-start"> 順位番号</span>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        className="form-control"
+                                                                                        placeholder="1"
+                                                                                        name='order_num'
+                                                                                        value={wills.estate.owner_right[index].order_num}
+                                                                                        onChange={(e) => onChangeEstateOwnerRightInput(e, index)}
+                                                                                    />
+                                                                                </div> */}
+                                                                                <div className="input-group">
+                                                                                    <span className="input-group-text align-items-start"> 登記の目的</span>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        className="form-control"
+                                                                                        placeholder="所有権保存"
+                                                                                        name='reg_purpose'
+                                                                                        value={wills.estate.owner_right[index].reg_purpose}
+                                                                                        onChange={(e) => onChangeEstateOwnerRightInput(e, index)}
+                                                                                    />
+                                                                                </div>
+                                                                                <div className="input-group">
+                                                                                    <span className="input-group-text align-items-start"> 受付年月日<br/>受付番号</span>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        className="form-control"
+                                                                                        placeholder="平成20年10月15日 第6037号"
+                                                                                        name='reg_date'
+                                                                                        value={wills.estate.owner_right[index].reg_date}
+                                                                                        onChange={(e) => onChangeEstateOwnerRightInput(e, index)}
+                                                                                    />
+                                                                                </div>
+                                                                                <div className="input-group">
+                                                                                    <span className="input-group-text align-items-start"> 原因</span>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        className="form-control"
+                                                                                        placeholder="平成20年10月14日"
+                                                                                        name='cause'
+                                                                                        value={wills.estate.owner_right[index].cause}
+                                                                                        onChange={(e) => onChangeEstateOwnerRightInput(e, index)}
+                                                                                    />
+                                                                                </div>
+                                                                                <div className="input-group">
+                                                                                    <span className="input-group-text align-items-start text-break" style={{whiteSpace: 'normal'}}>権利者その他の事項</span>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        className="form-control"
+                                                                                        placeholder="所有者 特別区南都町一丁目1番1号甲野 太郎"
+                                                                                        name='other_info'
+                                                                                        value={wills.estate.owner_right[index].other_info}
+                                                                                        onChange={(e) => onChangeEstateOwnerRightInput(e, index)}
+                                                                                    />
+                                                                                </div>
+                                                                                <div className="d-flex justify-content-end mb-2">
+                                                                                    <button type="button" class="btn btn-dark" onClick={removeEstateOwnerRight}>削除</button>
+                                                                                </div>
+                                                                        </Accordion.Body>
+                                                                    </Accordion.Item>
+                                                                ))
+                                                            }
+                                                        </Accordion>
+                                                    }
+                                                {/* <div className="input-group">
                                                     <span className="input-group-text align-items-start">地目</span>
                                                     <input
                                                         type="text"
@@ -615,13 +1015,87 @@ function MakeWill(props) {
                                                         value={wills.estate.prev_owner}
                                                         onChange={onChangeEstateInput}
                                                     />
-                                                </div>
+                                                </div> */}
                                                 </Accordion.Body>
                                             </Accordion.Item>
                                             <Accordion.Item eventKey="3">
-                                                <Accordion.Header>その他の物件詳細</Accordion.Header>
+                                                <Accordion.Header>【権利部 (乙区)】 (所有権以外の権利に関する事項)</Accordion.Header>
                                                 <Accordion.Body>
-                                                    <div className="input-group">
+                                                <div className="d-flex justify-content-end mb-2">
+                                                        <button type="button" class="btn btn-dark" onClick={addEstateOtherRight}>追加</button>
+                                                    </div>
+                                                    {
+                                                        <Accordion  onSelect={handleSelect}>
+                                                            {
+                                                                wills.estate.other_right.map((item, index) => (
+                                                                    <Accordion.Item eventKey={index + "add"}>
+                                                                        <Accordion.Header>権利部 (甲区) {index  + 1}</Accordion.Header>
+                                                                            <Accordion.Body>
+                                                                                {/* <div className="input-group">
+                                                                                    <span className="input-group-text align-items-start"> 順位番号</span>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        className="form-control"
+                                                                                        placeholder="1"
+                                                                                        name='order_num'
+                                                                                        value={wills.estate.other_right[index].order_num}
+                                                                                        onChange={(e) => onChangeEstateOtherRightInput(e, index)}
+                                                                                    />
+                                                                                </div> */}
+                                                                                <div className="input-group">
+                                                                                    <span className="input-group-text align-items-start"> 登記の目的</span>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        className="form-control"
+                                                                                        placeholder="所有権保存"
+                                                                                        name='reg_purpose'
+                                                                                        value={wills.estate.other_right[index].reg_purpose}
+                                                                                        onChange={(e) => onChangeEstateOtherRightInput(e, index)}
+                                                                                    />
+                                                                                </div>
+                                                                                <div className="input-group">
+                                                                                    <span className="input-group-text align-items-start"> 受付年月日<br/>受付番号</span>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        className="form-control"
+                                                                                        placeholder="平成20年10月15日 第6037号"
+                                                                                        name='reg_date'
+                                                                                        value={wills.estate.other_right[index].reg_date}
+                                                                                        onChange={(e) => onChangeEstateOtherRightInput(e, index)}
+                                                                                    />
+                                                                                </div>
+                                                                                <div className="input-group">
+                                                                                    <span className="input-group-text align-items-start"> 原因</span>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        className="form-control"
+                                                                                        placeholder="平成20年10月14日"
+                                                                                        name='cause'
+                                                                                        value={wills.estate.other_right[index].cause}
+                                                                                        onChange={(e) => onChangeEstateOtherRightInput(e, index)}
+                                                                                    />
+                                                                                </div>
+                                                                                <div className="input-group">
+                                                                                    <span className="input-group-text align-items-start text-break" style={{whiteSpace: 'normal'}}>権利者その他の事項</span>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        className="form-control"
+                                                                                        placeholder="所有者 特別区南都町一丁目1番1号甲野 太郎"
+                                                                                        name='other_info'
+                                                                                        value={wills.estate.other_right[index].other_info}
+                                                                                        onChange={(e) => onChangeEstateOtherRightInput(e, index)}
+                                                                                    />
+                                                                                </div>
+                                                                                <div className="d-flex justify-content-end mb-2">
+                                                                                    <button type="button" class="btn btn-dark" onClick={removeEstateOtherRight}>削除</button>
+                                                                                </div>
+                                                                        </Accordion.Body>
+                                                                    </Accordion.Item>
+                                                                ))
+                                                            }
+                                                        </Accordion>
+                                                    }
+                                                    {/* <div className="input-group">
                                                         <span className="input-group-text align-items-start">境界の詳細</span>
                                                         <input
                                                             type="text"
@@ -664,7 +1138,7 @@ function MakeWill(props) {
                                                             value={wills.estate.restriction}
                                                             onChange={onChangeEstateInput}
                                                         />
-                                                    </div>
+                                                    </div> */}
                                                 </Accordion.Body>
                                             </Accordion.Item>
                                             <Accordion.Item eventKey="4">
@@ -676,9 +1150,9 @@ function MakeWill(props) {
                                                         type="text"
                                                         className="form-control"
                                                         placeholder="共有物件"
-                                                        name='shared_prop'
-                                                        value={wills.estate.shared_prop}
-                                                        onChange={onChangeEstateInput}
+                                                        name='cert_num'
+                                                        value={wills.estate.cert_info.cert_num}
+                                                        onChange={onChangeEstateCertInput}
                                                     />
                                                 </div>
                                                 <div className="input-group">
@@ -687,26 +1161,89 @@ function MakeWill(props) {
                                                         type="text"
                                                         className="form-control"
                                                         placeholder="持分割合 "
-                                                        name='own_ratio'
-                                                        value={wills.estate.own_ratio}
-                                                        onChange={onChangeEstateInput}
+                                                        name='cert_copy'
+                                                        value={wills.estate.cert_info.cert_copy}
+                                                        onChange={onChangeEstateCertInput}
                                                     />
                                                 </div>
+                                                <div className="d-flex justify-content-end mb-2">
+                                                    <button type="button" class="btn btn-dark" onClick={addEstateCertInfo}>追加</button>
+                                                </div>
+                                                {
+                                                    <Accordion  onSelect={handleSelect}>
+                                                        {
+                                                            wills.estate.cert_info.mort_info.map((item, index) => (
+                                                                <Accordion.Item eventKey={index + "add"}>
+                                                                    <Accordion.Header>共有所有権の詳細 {index  + 1}</Accordion.Header>
+                                                                        <Accordion.Body>
+                                                                            <div className="input-group">
+                                                                                <span className="input-group-text align-items-start" style={{whiteSpace: 'normal'}}> 担保の目的である権利の表示</span>
+                                                                                <input
+                                                                                    type="text"
+                                                                                    className="form-control"
+                                                                                    placeholder="特別区南都町一丁目 101番の土地"
+                                                                                    name='rights_desc'
+                                                                                    value={wills.estate.cert_info.mort_info[index].rights_desc}
+                                                                                    onChange={(e) => {onChangeEstateCertInput(e, index)}}
+                                                                                />
+                                                                            </div>
+                                                                            <div className="input-group">
+                                                                                <span className="input-group-text align-items-start">順位番号</span>
+                                                                                <input
+                                                                                    type="text"
+                                                                                    className="form-control"
+                                                                                    placeholder="1"
+                                                                                    name='ranking_number'
+                                                                                    value={wills.estate.cert_info.mort_info[index].ranking_number}
+                                                                                    onChange={(e) => {onChangeEstateCertInput(e, index)}}
+                                                                                />
+                                                                            </div>
+                                                                            <div className="input-group">
+                                                                                <span className="input-group-text align-items-start"> 予備</span>
+                                                                                <input
+                                                                                    type="text"
+                                                                                    className="form-control"
+                                                                                    placeholder="平成20年10月14日"
+                                                                                    name='other'
+                                                                                    value={wills.estate.cert_info.mort_info[index].other}
+                                                                                    onChange={(e) => {onChangeEstateCertInput(e, index)}}
+                                                                                />
+                                                                            </div>
+                                                                            <div className="d-flex justify-content-end mb-2">
+                                                                                <button type="button" class="btn btn-dark" onClick={removeEstateCertInfo}>削除</button>
+                                                                            </div>
+                                                                    </Accordion.Body>
+                                                                </Accordion.Item>
+                                                            ))
+                                                        }
+                                                    </Accordion>
+                                                }
                                                 <div className="input-group">
-                                                    <span className="input-group-text align-items-start">共同所有者</span>
+                                                    <span className="input-group-text align-items-start">日付</span>
                                                     <input
                                                         type="text"
                                                         className="form-control"
-                                                        placeholder="共同所有者"
-                                                        name='co_owner'
-                                                        value={wills.estate.co_owner}
-                                                        onChange={onChangeEstateInput}
+                                                        placeholder="00000000000000000000"
+                                                        name='date'
+                                                        value={wills.estate.land.date}
+                                                        onChange={onChangeEstateLandInput}
+                                                    />
+                                                </div>
+                                                <div className="input-group">
+                                                    <span className="input-group-text align-items-start">登記事項証明書</span>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        placeholder="00000000000000000000"
+                                                        name='serial'
+                                                        value={wills.estate.land.serial}
+                                                        onChange={onChangeEstateLandInput}
                                                     />
                                                 </div>
                                                 </Accordion.Body>
                                             </Accordion.Item>
                                             <div className="d-flex flex-row-reverse mt-5">
-                                                <button className="btn btn-primary" type="button" onClick={() => handleUpdateWill(2)}>Update</button>
+                                                <button className="btn btn-primary" type="button" onClick={() => handleUpdateWill(2)}>Pdf 生成</button>
                                             </div>
                                         </Accordion>
                                     </Accordion.Body>

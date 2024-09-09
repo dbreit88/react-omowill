@@ -1,5 +1,6 @@
 const mysql = require('mysql2');
-
+require('dotenv').config({path: '../configs/.env'});
+console.log("hehehe", process.env.REACT_APP_DATABASE_HOST_URL)
 const pool = mysql.createPool({
     host: process.env.REACT_APP_DATABASE_HOST_URL,
     user: process.env.REACT_APP_DATABASE_USERNAME,
